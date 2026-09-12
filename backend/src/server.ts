@@ -497,6 +497,10 @@ app.use((err: any, req: Request, res: Response, next: NextFunction): any => {
 });
 
 // Start Server
-app.listen(PORT, () => {
-  console.log(`Server is running in ${process.env.NODE_ENV || "development"} mode on http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server is running in ${process.env.NODE_ENV || "development"} mode on http://localhost:${PORT}`);
+  });
+}
+
+export default app;
