@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { API_BASE } from "@/lib/api";
 import {
   LineChart,
   Line,
@@ -570,7 +571,7 @@ export default function TimelinePage() {
     setError(null);
     try {
       const token = await getToken();
-      const res = await fetch("http://localhost:5000/api/timeline", {
+      const res = await fetch(`${API_BASE}/api/timeline`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch timeline");
@@ -588,7 +589,7 @@ export default function TimelinePage() {
     setError(null);
     try {
       const token = await getToken();
-      const res = await fetch("http://localhost:5000/api/timeline/trends", {
+      const res = await fetch(`${API_BASE}/api/timeline/trends`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch trends");
@@ -606,7 +607,7 @@ export default function TimelinePage() {
     setError(null);
     try {
       const token = await getToken();
-      const res = await fetch("http://localhost:5000/api/timeline/analysis", {
+      const res = await fetch(`${API_BASE}/api/timeline/analysis`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch analysis");

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { API_BASE } from "@/lib/api";
 import {
   AreaChart,
   Area,
@@ -303,7 +304,7 @@ export default function HealthTrendPage() {
     setError(null);
     try {
       const token = await user.getIdToken();
-      const res = await fetch("http://localhost:5000/api/health-trend", {
+      const res = await fetch(`${API_BASE}/api/health-trend`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch health trend");

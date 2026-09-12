@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { API_BASE } from "@/lib/api";
 import {
   TrendingUp,
   TrendingDown,
@@ -87,7 +88,7 @@ export default function Dashboard() {
     setError(null);
     try {
       const token = await user.getIdToken();
-      const res = await fetch("http://localhost:5000/api/dashboard/summary", {
+      const res = await fetch(`${API_BASE}/api/dashboard/summary`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Failed to load dashboard");

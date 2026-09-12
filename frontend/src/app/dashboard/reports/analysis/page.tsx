@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { API_BASE } from "@/lib/api";
 import { 
   ChevronLeft, 
   Download, 
@@ -44,7 +45,7 @@ export default function ReportAnalysisPage() {
       try {
         if (showLoading) setLoading(true);
         const token = await user.getIdToken();
-        const response = await fetch(`http://localhost:5000/api/reports/${reportId}/analysis`, {
+        const response = await fetch(`${API_BASE}/api/reports/${reportId}/analysis`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -223,7 +224,7 @@ export default function ReportAnalysisPage() {
         </div>
 
         <a 
-          href={`http://localhost:5000/api/reports/${report.id}/download`} 
+          href={`${API_BASE}/api/reports/${report.id}/download`} 
           target="_blank" 
           rel="noreferrer"
           className="bg-[#0a4e3e] hover:bg-[#083d31] text-white text-xs font-bold px-6 py-3 rounded-full transition-all shadow flex items-center gap-2 cursor-pointer self-start sm:self-center"

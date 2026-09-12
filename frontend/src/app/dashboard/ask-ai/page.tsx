@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Send, Sparkles, RefreshCw, User, Bot } from "lucide-react";
+import { API_BASE } from "@/lib/api";
 
 interface Message {
   id: string;
@@ -66,7 +67,7 @@ export default function AskAIPage() {
 
     try {
       const token = await user.getIdToken();
-      const res = await fetch("http://localhost:5000/api/ask", {
+      const res = await fetch(`${API_BASE}/api/ask`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -3,6 +3,7 @@
 import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { API_BASE } from "@/lib/api";
 import { 
   UploadCloud, 
   FileText, 
@@ -79,7 +80,7 @@ export default function UploadReportsPage() {
         }
       }
 
-      const response = await fetch("http://localhost:5000/api/upload", {
+      const response = await fetch(`${API_BASE}/api/upload`, {
         method: "POST",
         headers: headers,
         body: formData,

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { API_BASE } from "@/lib/api";
 import {
   User,
   FileText,
@@ -245,7 +246,7 @@ export default function SettingsPage() {
     setLoadingProfile(true);
     try {
       const token = await getToken();
-      const res = await fetch("http://localhost:5000/api/settings/profile", {
+      const res = await fetch(`${API_BASE}/api/settings/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch profile");
@@ -272,7 +273,7 @@ export default function SettingsPage() {
     setLoadingReports(true);
     try {
       const token = await getToken();
-      const res = await fetch("http://localhost:5000/api/settings/reports", {
+      const res = await fetch(`${API_BASE}/api/settings/reports`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch reports");
@@ -297,7 +298,7 @@ export default function SettingsPage() {
     setDeletingId(id);
     try {
       const token = await getToken();
-      const res = await fetch(`http://localhost:5000/api/reports/${id}`, {
+      const res = await fetch(`${API_BASE}/api/reports/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -328,7 +329,7 @@ export default function SettingsPage() {
     setDeletingAll(true);
     try {
       const token = await getToken();
-      const res = await fetch("http://localhost:5000/api/settings/data", {
+      const res = await fetch(`${API_BASE}/api/settings/data`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
