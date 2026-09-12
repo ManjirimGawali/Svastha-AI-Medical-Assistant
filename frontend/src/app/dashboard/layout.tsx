@@ -44,8 +44,8 @@ export default function DashboardLayout({
   // Sidebar Menu Items with href routing
   const menuItems = [
     { icon: Home, label: "Home", href: "/dashboard" },
-    { icon: MessageSquare, label: "Ask AI", href: "#" },
-    { icon: FileText, label: "My Reports", href: "/dashboard/reports" },
+    { icon: MessageSquare, label: "Ask AI", href: "/dashboard/ask-ai" },
+    { icon: FileText, label: "Upload Reports", href: "/dashboard/reports" },
     { icon: History, label: "Timeline", href: "#" },
     { icon: TrendingUp, label: "Health Trends", href: "#" },
     { icon: Settings, label: "Settings", href: "#" },

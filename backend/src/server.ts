@@ -9,6 +9,7 @@ import { supabase } from "./supabase";
 import { requireAuth, AuthenticatedRequest } from "./middleware/auth";
 import { ReportService } from "./services/report.service";
 import { parseBiomarkers } from "./services/gemini.service";
+import { askAI } from "./services/ask.service";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -40,6 +41,25 @@ app.post("/api/gemini", async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error parsing report:", error);
     res.status(500).json({ error: "Failed to parse report" });
+  }
+});
+
+// POST /api/ask — AI Q&A endpoint with per-user DB context
+app.post("/api/ask", requireAuth, async (req: AuthenticatedRequest, res: Response): Promise<any> => {
+  try {
+    const { question } = req.body;
+
+    if (!question || typeof question !== "string" || question.trim() === "") {
+      return res.status(400).json({ error: "'question' field is required and must be a non-empty string." });
+    }
+
+    const userId = req.user?.sub || "anonymous";
+    const result = await askAI(userId, question.trim());
+
+    return res.json(result);
+  } catch (error: any) {
+    console.error("Ask AI error:", error);
+    return res.status(500).json({ error: "Failed to get AI response", details: error.message });
   }
 });
 

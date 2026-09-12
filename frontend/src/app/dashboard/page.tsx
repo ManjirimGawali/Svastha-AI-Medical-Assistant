@@ -229,7 +229,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Quick Ask AI Bar */}
-        <div className="bg-white border border-[#ecebe6] rounded-3xl p-6 lg:col-span-2 flex flex-col justify-between shadow-sm space-y-4">
+        {/* <div className="bg-white border border-[#ecebe6] rounded-3xl p-6 lg:col-span-2 flex flex-col justify-between shadow-sm space-y-4">
           <div>
             <h3 className="text-base font-extrabold text-slate-800">Quick Ask AI</h3>
             <p className="text-xs font-semibold text-slate-400 mt-1">Get immediate answers about your medical metrics or prescriptions.</p>
@@ -247,7 +247,7 @@ export default function Dashboard() {
               <Send className="w-4 h-4" />
             </button>
           </div>
-        </div>
+        </div> */}
 
         {/* Plant Banners Container */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 lg:col-span-1">
