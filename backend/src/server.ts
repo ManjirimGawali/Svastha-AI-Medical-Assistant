@@ -143,7 +143,75 @@ app.get("/api/health-trend", requireAuth, async (req: AuthenticatedRequest, res:
   }
 });
 
+/**
+ * GET /api/dashboard/summary
+ * Single aggregated endpoint for the dashboard home page.
+ */
+app.get("/api/dashboard/summary", requireAuth, async (req: AuthenticatedRequest, res: Response): Promise<any> => {
+  try {
+    const userId = req.user?.sub || "anonymous";
+
+    const [trendData, allReports, latestCompleted] = await Promise.all([
+      getHealthTrend(userId),
+      prisma.report.findMany({
+        where: { userId },
+        orderBy: { uploadDate: "desc" },
+        take: 4,
+      }),
+      prisma.report.findFirst({
+        where: { userId, processingStatus: "completed" },
+        orderBy: [{ reportDate: "desc" }, { uploadDate: "desc" }],
+        select: { aiSummary: true },
+      }),
+    ]);
+
+    const recentReports = allReports.map((report) => {
+      const { data: { publicUrl } } = supabase.storage.from("medical-reports").getPublicUrl(report.filePath);
+      const ext = report.filePath.split(".").pop()?.toUpperCase() || "FILE";
+      let initial = ext;
+      let color = "bg-[#fee2e2] text-red-600 border-red-100";
+      const up = report.reportName.toUpperCase();
+      if (up.includes("BLOOD") || up.includes("CBC")) { initial = "CBC"; color = "bg-[#fee2e2] text-red-600 border-red-100"; }
+      else if (up.includes("THYROID") || up.includes("TSH")) { initial = "TSH"; color = "bg-[#dcfce7] text-[#0a4e3e] border-[#d6ede4]"; }
+      else if (up.includes("X-RAY") || up.includes("CHEST") || up.includes("XRAY")) { initial = "XR"; color = "bg-[#dbeafe] text-blue-600 border-blue-100"; }
+      else if (up.includes("VITAMIN") || up.includes("VITD")) { initial = "VitD"; color = "bg-[#fef9c3] text-amber-600 border-amber-100"; }
+      else if (ext === "PDF") { initial = "PDF"; }
+      else if (["PNG", "JPG", "JPEG"].includes(ext)) { initial = "IMG"; color = "bg-[#dbeafe] text-blue-600 border-blue-100"; }
+      return {
+        id: report.id,
+        title: report.reportName,
+        date: report.uploadDate.toLocaleDateString("en-US", { day: "2-digit", month: "short", year: "numeric" }),
+        initial,
+        color,
+        publicUrl,
+        processingStatus: report.processingStatus,
+      };
+    });
+
+    return res.json({
+      stats: {
+        totalReports: trendData.stats.totalReports,
+        completedReports: trendData.stats.completedReports,
+        latestScore: trendData.latestScore,
+        scoreDelta: trendData.scoreDelta,
+        streakClean: trendData.stats.streakCleanReports,
+      },
+      recentReports,
+      latestSummary: latestCompleted?.aiSummary ?? null,
+      currentFlags: trendData.currentFlags.map((f) => f.biomarkerName),
+      improved: trendData.velocities
+        .filter((v) => v.latestInterpretation?.toLowerCase() === "normal" && v.previousValue !== v.latestValue)
+        .map((v) => v.biomarkerName).slice(0, 3),
+      worsened: trendData.currentFlags.map((f) => f.biomarkerName).slice(0, 3),
+    });
+  } catch (error: any) {
+    console.error("Dashboard summary error:", error);
+    return res.status(500).json({ error: "Failed to fetch dashboard summary", details: error.message });
+  }
+});
+
 // ── Settings API ──────────────────────────────────────────────────────────────
+
 
 /**
  * GET /api/settings/profile
