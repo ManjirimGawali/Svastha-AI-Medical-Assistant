@@ -32,7 +32,11 @@ const upload = multer({
 });
 
 // Middleware
-app.use(cors());
+const allowedOrigin = process.env.FRONTEND_URL ?? "http://localhost:3000";
+app.use(cors({
+  origin: allowedOrigin,
+  credentials: true,
+}));
 app.use(express.json());
 
 // Routes
