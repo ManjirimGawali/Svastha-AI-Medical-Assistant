@@ -1,0 +1,9 @@
+node_modules
+# Keep environment variables out of version control
+.env
+credentials/
+document-ai.json
+
+credentials/document-ai.json 
+ 
+/src/generated/prisma

@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+
+model Report {
+  id               String      @id @default(uuid()) @db.Uuid
+  userId           String      @map("user_id") @db.VarChar(255)
+  reportName       String      @map("report_name") @db.VarChar(255)
+  filePath         String      @map("file_path") @db.VarChar(512)
+  uploadDate       DateTime    @default(now()) @map("upload_date") @db.Timestamptz
+  reportDate       DateTime?   @map("report_date") @db.Timestamptz
+  ocrText          String?     @map("ocr_text") @db.Text
+  aiSummary        String?     @map("ai_summary") @db.Text
+  processingStatus String      @default("processing") @map("processing_status") @db.VarChar(50)
+  createdAt        DateTime    @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime    @updatedAt @map("updated_at") @db.Timestamptz
+  
+  // Relations
+  biomarkers       Biomarker[]
+
+  @@index([userId])
+  @@map("reports")
+}
+
+model Biomarker {
+  id             String    @id @default(uuid()) @db.Uuid
+  reportId       String    @map("report_id") @db.Uuid
+  name           String    @db.VarChar(255)
+  value          String    @db.VarChar(100)        // String to support qualitative results like "Trace" or "Negative"
+  numericValue   Float?    @map("numeric_value")  // Float to allow graphing and trend analysis
+  unit           String?   @db.VarChar(50)
+  referenceRange String?   @map("reference_range") @db.VarChar(255)
+  interpretation String?   @db.VarChar(100)        // E.g., "Normal", "High", "Low"
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  report         Report    @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@index([reportId])
+  @@map("biomarkers")
+}
+
+
