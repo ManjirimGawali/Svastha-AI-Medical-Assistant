@@ -46,8 +46,8 @@ export default function DashboardLayout({
     { icon: Home, label: "Home", href: "/dashboard" },
     { icon: MessageSquare, label: "Ask AI", href: "/dashboard/ask-ai" },
     { icon: FileText, label: "Upload Reports", href: "/dashboard/reports" },
-    { icon: History, label: "Timeline", href: "#" },
-    { icon: TrendingUp, label: "Health Trends", href: "#" },
+    { icon: History, label: "Timeline", href: "/dashboard/timeline" },
+    { icon: TrendingUp, label: "Health Trends", href: "/dashboard/health-trend" },
     { icon: Settings, label: "Settings", href: "#" },
   ];
 

@@ -10,6 +10,8 @@ import { requireAuth, AuthenticatedRequest } from "./middleware/auth";
 import { ReportService } from "./services/report.service";
 import { parseBiomarkers } from "./services/gemini.service";
 import { askAI } from "./services/ask.service";
+import { getTimeline, getBiomarkerTrends, getTimelineAnalysis } from "./services/timeline.service";
+import { getHealthTrend } from "./services/healthtrend.service";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -60,6 +62,77 @@ app.post("/api/ask", requireAuth, async (req: AuthenticatedRequest, res: Respons
   } catch (error: any) {
     console.error("Ask AI error:", error);
     return res.status(500).json({ error: "Failed to get AI response", details: error.message });
+  }
+});
+
+// ── Timeline & Trend Endpoints ─────────────────────────────────────────────────
+
+/**
+ * GET /api/timeline
+ * Returns every report (with biomarkers) ordered chronologically.
+ * Includes a `hasAbnormals` flag on each entry.
+ */
+app.get("/api/timeline", requireAuth, async (req: AuthenticatedRequest, res: Response): Promise<any> => {
+  try {
+    const userId = req.user?.sub || "anonymous";
+    const events = await getTimeline(userId);
+    return res.json({ events });
+  } catch (error: any) {
+    console.error("Timeline error:", error);
+    return res.status(500).json({ error: "Failed to fetch timeline", details: error.message });
+  }
+});
+
+/**
+ * GET /api/timeline/trends
+ * Returns numeric biomarker readings grouped by biomarker name for trend charts.
+ * Only includes biomarkers with at least one numeric value.
+ */
+app.get("/api/timeline/trends", requireAuth, async (req: AuthenticatedRequest, res: Response): Promise<any> => {
+  try {
+    const userId = req.user?.sub || "anonymous";
+    const trends = await getBiomarkerTrends(userId);
+    return res.json({ trends });
+  } catch (error: any) {
+    console.error("Trend error:", error);
+    return res.status(500).json({ error: "Failed to fetch trends", details: error.message });
+  }
+});
+
+/**
+ * GET /api/timeline/analysis
+ * Returns a high-level summary: total/completed/abnormal reports,
+ * recent abnormal biomarkers, and which biomarkers improved/worsened vs last report.
+ */
+app.get("/api/timeline/analysis", requireAuth, async (req: AuthenticatedRequest, res: Response): Promise<any> => {
+  try {
+    const userId = req.user?.sub || "anonymous";
+    const analysis = await getTimelineAnalysis(userId);
+    return res.json({ analysis });
+  } catch (error: any) {
+    console.error("Timeline analysis error:", error);
+    return res.status(500).json({ error: "Failed to fetch timeline analysis", details: error.message });
+  }
+});
+
+/**
+ * GET /api/health-trend
+ * Returns a rich health-performance summary:
+ *   - healthScoreSeries  : per-report score (0-100)
+ *   - latestScore        : current score & delta vs previous
+ *   - categoryBreakdown  : normal/abnormal counts by biomarker category
+ *   - currentFlags       : abnormal biomarkers in the latest report
+ *   - velocities         : biggest changes between the last two reports
+ *   - stats              : aggregate counts + clean-report streak
+ */
+app.get("/api/health-trend", requireAuth, async (req: AuthenticatedRequest, res: Response): Promise<any> => {
+  try {
+    const userId = req.user?.sub || "anonymous";
+    const trend = await getHealthTrend(userId);
+    return res.json({ trend });
+  } catch (error: any) {
+    console.error("Health trend error:", error);
+    return res.status(500).json({ error: "Failed to fetch health trend", details: error.message });
   }
 });
 
