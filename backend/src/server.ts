@@ -12,6 +12,13 @@ import { parseBiomarkers } from "./services/gemini.service";
 import { askAI } from "./services/ask.service";
 import { getTimeline, getBiomarkerTrends, getTimelineAnalysis } from "./services/timeline.service";
 import { getHealthTrend } from "./services/healthtrend.service";
+import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import pg from "pg";
+
+const pgPool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+const prismaAdapter = new PrismaPg(pgPool);
+const prisma = new PrismaClient({ adapter: prismaAdapter });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -133,6 +140,118 @@ app.get("/api/health-trend", requireAuth, async (req: AuthenticatedRequest, res:
   } catch (error: any) {
     console.error("Health trend error:", error);
     return res.status(500).json({ error: "Failed to fetch health trend", details: error.message });
+  }
+});
+
+// ── Settings API ──────────────────────────────────────────────────────────────
+
+/**
+ * GET /api/settings/profile
+ * Returns the authenticated user's profile data derived from their Firebase claims
+ * plus aggregate stats from the database (report count, biomarker count).
+ */
+app.get("/api/settings/profile", requireAuth, async (req: AuthenticatedRequest, res: Response): Promise<any> => {
+  try {
+    const userId = req.user?.sub || "anonymous";
+    const [reportCount, biomarkerCount] = await Promise.all([
+      prisma.report.count({ where: { userId } }),
+      prisma.biomarker.count({ where: { report: { userId } } }),
+    ]);
+    return res.json({
+      profile: {
+        uid: userId,
+        email: req.user?.email ?? null,
+        displayName: req.user?.name ?? null,
+        photoURL: req.user?.picture ?? null,
+        stats: { reportCount, biomarkerCount },
+      },
+    });
+  } catch (error: any) {
+    console.error("Settings profile error:", error);
+    return res.status(500).json({ error: "Failed to fetch profile", details: error.message });
+  }
+});
+
+/**
+ * GET /api/settings/reports
+ * Returns all reports for the user (id, name, date, status, biomarker count).
+ * Used in the Settings > Reports Management section.
+ */
+app.get("/api/settings/reports", requireAuth, async (req: AuthenticatedRequest, res: Response): Promise<any> => {
+  try {
+    const userId = req.user?.sub || "anonymous";
+    const reports = await prisma.report.findMany({
+      where: { userId },
+      orderBy: { uploadDate: "desc" },
+      include: { _count: { select: { biomarkers: true } } },
+    });
+    return res.json({
+      reports: reports.map((r) => ({
+        id: r.id,
+        reportName: r.reportName,
+        uploadDate: r.uploadDate.toISOString(),
+        reportDate: r.reportDate ? r.reportDate.toISOString() : null,
+        processingStatus: r.processingStatus,
+        filePath: r.filePath,
+        biomarkerCount: r._count.biomarkers,
+      })),
+    });
+  } catch (error: any) {
+    console.error("Settings reports error:", error);
+    return res.status(500).json({ error: "Failed to fetch reports", details: error.message });
+  }
+});
+
+/**
+ * DELETE /api/reports/:id
+ * Deletes a report (and its biomarkers via Prisma cascade) plus the Supabase Storage file.
+ */
+app.delete("/api/reports/:id", requireAuth, async (req: AuthenticatedRequest, res: Response): Promise<any> => {
+  try {
+    const { id } = req.params;
+    const userId = req.user?.sub || "anonymous";
+
+    // Verify ownership
+    const report = await prisma.report.findFirst({ where: { id, userId } });
+    if (!report) {
+      return res.status(404).json({ error: "Report not found or access denied" });
+    }
+
+    // Remove file from Supabase Storage (best-effort, don't fail if missing)
+    await supabase.storage.from("medical-reports").remove([report.filePath]).catch(() => {});
+
+    // Delete from DB (cascades biomarkers)
+    await prisma.report.delete({ where: { id } });
+
+    return res.json({ success: true, deletedId: id });
+  } catch (error: any) {
+    console.error("Delete report error:", error);
+    return res.status(500).json({ error: "Failed to delete report", details: error.message });
+  }
+});
+
+/**
+ * DELETE /api/settings/data
+ * Deletes ALL reports and biomarkers for the authenticated user.
+ */
+app.delete("/api/settings/data", requireAuth, async (req: AuthenticatedRequest, res: Response): Promise<any> => {
+  try {
+    const userId = req.user?.sub || "anonymous";
+
+    // Get all file paths for storage cleanup
+    const reports = await prisma.report.findMany({ where: { userId }, select: { filePath: true } });
+    const paths = reports.map((r) => r.filePath);
+    if (paths.length > 0) {
+      await supabase.storage.from("medical-reports").remove(paths).catch(() => {});
+    }
+
+    // Delete all reports (cascades biomarkers)
+    await prisma.report.deleteMany({ where: { userId } });
+
+    return res.json({ success: true, deletedCount: paths.length });
+  } catch (error: any) {
+    console.error("Delete all data error:", error);
+    return res.status(500).json({ error: "Failed to delete data", details: error.message });
   }
 });
 

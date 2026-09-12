@@ -48,7 +48,7 @@ export default function DashboardLayout({
     { icon: FileText, label: "Upload Reports", href: "/dashboard/reports" },
     { icon: History, label: "Timeline", href: "/dashboard/timeline" },
     { icon: TrendingUp, label: "Health Trends", href: "/dashboard/health-trend" },
-    { icon: Settings, label: "Settings", href: "#" },
+    { icon: Settings, label: "Settings", href: "/dashboard/settings" },
   ];
 
   return (
