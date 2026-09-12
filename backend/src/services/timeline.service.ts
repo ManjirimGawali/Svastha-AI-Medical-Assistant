@@ -1,10 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import pg from "pg";
-
-const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+import { prisma } from "../lib/prisma";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -154,8 +148,8 @@ export async function getBiomarkerTrends(userId: string): Promise<BiomarkerTrend
 
   // Convert map → sorted array (most data-rich first)
   return Array.from(trendMap.entries())
-    .map(([name, { unit, points }]) => ({ name, unit, points }))
-    .sort((a, b) => b.points.length - a.points.length);
+    .map(([name, { unit, points }]: [string, { unit: string | null; points: TrendPoint[] }]) => ({ name, unit, points }))
+    .sort((a: BiomarkerTrend, b: BiomarkerTrend) => b.points.length - a.points.length);
 }
 
 /**

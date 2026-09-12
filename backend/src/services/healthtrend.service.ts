@@ -1,10 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import pg from "pg";
-
-const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+import { prisma } from "../lib/prisma";
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -178,6 +172,15 @@ function computeScore(normal: number, total: number): number {
 
 // ── Main export ────────────────────────────────────────────────────────────────
 
+type BiomarkerRow = {
+  name: string;
+  value: string;
+  numericValue: number | null;
+  unit: string | null;
+  referenceRange: string | null;
+  interpretation: string | null;
+};
+
 export async function getHealthTrend(userId: string): Promise<HealthTrendSummary> {
   const reports = await prisma.report.findMany({
     where: { userId },
@@ -185,7 +188,7 @@ export async function getHealthTrend(userId: string): Promise<HealthTrendSummary
     orderBy: [{ reportDate: "asc" }, { uploadDate: "asc" }],
   });
 
-  const completed = reports.filter((r) => r.processingStatus === "completed");
+  const completed = reports.filter((r: { processingStatus: string; biomarkers: BiomarkerRow[] }) => r.processingStatus === "completed");
 
   // ── Health score series ─────────────────────────────────────────────────────
   const healthScoreSeries: HealthScorePoint[] = completed.map((r) => {
@@ -225,7 +228,7 @@ export async function getHealthTrend(userId: string): Promise<HealthTrendSummary
     }
   }
   const categoryBreakdown: BiomarkerCategoryBreakdown[] = Array.from(categoryMap.entries())
-    .map(([category, { normal, abnormal }]) => {
+    .map(([category, { normal, abnormal }]: [string, { normal: number; abnormal: number }]) => {
       const total = normal + abnormal;
       return {
         category,
@@ -235,7 +238,7 @@ export async function getHealthTrend(userId: string): Promise<HealthTrendSummary
         abnormalRate: total > 0 ? abnormal / total : 0,
       };
     })
-    .sort((a, b) => b.total - a.total);
+    .sort((a: BiomarkerCategoryBreakdown, b: BiomarkerCategoryBreakdown) => b.total - a.total);
 
   // ── Current flags (from latest completed report) ─────────────────────────
   const latestReport = completed[completed.length - 1];
@@ -259,10 +262,10 @@ export async function getHealthTrend(userId: string): Promise<HealthTrendSummary
     const latest = completed[completed.length - 1];
     const prev = completed[completed.length - 2];
 
-    const prevMap = new Map(
+    const prevMap = new Map<string, BiomarkerRow>(
       prev.biomarkers
-        .filter((b) => b.numericValue !== null)
-        .map((b) => [b.name.trim().toLowerCase(), b])
+        .filter((b: BiomarkerRow) => b.numericValue !== null)
+        .map((b: BiomarkerRow) => [b.name.trim().toLowerCase(), b])
     );
 
     for (const b of latest.biomarkers) {
@@ -287,15 +290,15 @@ export async function getHealthTrend(userId: string): Promise<HealthTrendSummary
     }
 
     // Sort by absolute percentage change descending
-    velocities.sort((a, b) => Math.abs(b.deltaPct) - Math.abs(a.deltaPct));
+    velocities.sort((a: TrendVelocity, b: TrendVelocity) => Math.abs(b.deltaPct) - Math.abs(a.deltaPct));
   }
 
   // ── Stats ─────────────────────────────────────────────────────────────────
   const uniqueBiomarkers = new Set(
-    completed.flatMap((r) => r.biomarkers.map((b) => b.name.trim().toLowerCase()))
+    completed.flatMap((r: { biomarkers: BiomarkerRow[] }) => r.biomarkers.map((b: BiomarkerRow) => b.name.trim().toLowerCase()))
   ).size;
 
-  const totalBiomarkersTracked = completed.reduce((sum, r) => sum + r.biomarkers.length, 0);
+  const totalBiomarkersTracked = completed.reduce((sum: number, r: { biomarkers: BiomarkerRow[] }) => sum + r.biomarkers.length, 0);
 
   // Streak = consecutive clean reports from newest backwards
   let streakCleanReports = 0;

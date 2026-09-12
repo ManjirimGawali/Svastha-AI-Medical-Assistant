@@ -12,13 +12,7 @@ import { parseBiomarkers } from "./services/gemini.service";
 import { askAI } from "./services/ask.service";
 import { getTimeline, getBiomarkerTrends, getTimelineAnalysis } from "./services/timeline.service";
 import { getHealthTrend } from "./services/healthtrend.service";
-import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import pg from "pg";
-
-const pgPool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
-const prismaAdapter = new PrismaPg(pgPool);
-const prisma = new PrismaClient({ adapter: prismaAdapter });
+import { prisma } from "./lib/prisma";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
