@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { 
@@ -11,7 +11,9 @@ import {
   TrendingUp, 
   Settings, 
   LogOut,
-  Database
+  Database,
+  Menu,
+  X
 } from "lucide-react";
 
 export default function DashboardLayout({
@@ -22,6 +24,12 @@ export default function DashboardLayout({
   const { user,loading, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
 
   // Route protection
   useEffect(() => {
@@ -52,29 +60,68 @@ export default function DashboardLayout({
   ];
 
   return (
-    <div className="max-h-screen bg-[#f9faf7] flex flex-col md:flex-row antialiased">
+    <div className="h-screen max-h-screen bg-[#f9faf7] flex flex-col md:flex-row antialiased overflow-hidden">
        
+      {/* Mobile Top Bar */}
+      <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-[#ecebe6] shrink-0 z-30 relative">
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => router.push("/dashboard")}>
+          <div className="text-[#0a4e3e]">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C12 2 15 7 15 10C15 11.6569 13.6569 13 12 13C10.3431 13 9 11.6569 9 10C9 7 12 2 12 2Z" fill="currentColor" opacity="0.9" />
+              <path d="M12 13C12 13 17.5 13.5 19 16C20.5 18.5 19.5 21 17 21C14.5 21 12 17.5 12 17.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <path d="M12 13C12 13 6.5 13.5 5 16C3.5 18.5 4.5 21 7 21C9.5 21 12 17.5 12 17.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <path d="M12 13V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </div>
+          <span className="text-xl font-extrabold tracking-tight text-[#0a4e3e] font-sans">
+            Svastha
+          </span>
+        </div>
+        <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 text-slate-500 hover:text-[#0a4e3e] hover:bg-[#eaf4f0] rounded-lg transition-colors">
+          <Menu className="w-6 h-6" />
+        </button>
+      </div>
+
+      {/* Mobile Drawer Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-slate-900/50 z-40 md:hidden backdrop-blur-sm"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Sidebar Layout */}
-      <div className="w-full md:w-[260px] bg-white border-r border-[#ecebe6] flex flex-col justify-between shrink-0 p-6">
+      <div className={`fixed inset-y-0 left-0 z-50 w-[260px] bg-white border-r border-[#ecebe6] flex flex-col justify-between shrink-0 p-6 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:flex ${
+        isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+      }`}>
         
         <div className="space-y-8">
           {/* Logo with Svastha leaf styling */}
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push("/dashboard")}>
-            <div className="text-[#0a4e3e]">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="transform scale-110">
-                <path d="M12 2C12 2 15 7 15 10C15 11.6569 13.6569 13 12 13C10.3431 13 9 11.6569 9 10C9 7 12 2 12 2Z" fill="currentColor" opacity="0.9" />
-                <path d="M12 13C12 13 17.5 13.5 19 16C20.5 18.5 19.5 21 17 21C14.5 21 12 17.5 12 17.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                <path d="M12 13C12 13 6.5 13.5 5 16C3.5 18.5 4.5 21 7 21C9.5 21 12 17.5 12 17.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                <path d="M12 13V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              </svg>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push("/dashboard")}>
+              <div className="text-[#0a4e3e]">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="transform scale-110">
+                  <path d="M12 2C12 2 15 7 15 10C15 11.6569 13.6569 13 12 13C10.3431 13 9 11.6569 9 10C9 7 12 2 12 2Z" fill="currentColor" opacity="0.9" />
+                  <path d="M12 13C12 13 17.5 13.5 19 16C20.5 18.5 19.5 21 17 21C14.5 21 12 17.5 12 17.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  <path d="M12 13C12 13 6.5 13.5 5 16C3.5 18.5 4.5 21 7 21C9.5 21 12 17.5 12 17.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  <path d="M12 13V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              </div>
+              <span className="text-2xl font-extrabold tracking-tight text-[#0a4e3e] font-sans">
+                Svastha
+              </span>
             </div>
-            <span className="text-2xl font-extrabold tracking-tight text-[#0a4e3e] font-sans">
-              Svastha
-            </span>
+            
+            <button 
+              className="md:hidden p-2 text-slate-400 hover:text-slate-700 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
           {/* Navigation Links */}
-          <nav className="space-y-1">
+          <nav className="space-y-1 overflow-y-auto max-h-[calc(100vh-250px)] md:max-h-none">
             {menuItems.map((item) => {
               const isActive = pathname === item.href;
               return (
@@ -148,7 +195,7 @@ export default function DashboardLayout({
       </div>
 
       {/* Main Workspace Panel */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto overflow-x-hidden relative">
         {children}
       </div>
 
