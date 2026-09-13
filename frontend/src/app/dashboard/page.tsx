@@ -81,9 +81,10 @@ export default function Dashboard() {
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [backendReady, setBackendReady] = useState(false);
 
   const fetchSummary = useCallback(async () => {
-    if (!user) return;
+    if (!user || !backendReady) return;
     setLoading(true);
     setError(null);
     try {
@@ -99,11 +100,53 @@ export default function Dashboard() {
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, backendReady]);
 
   useEffect(() => {
-    fetchSummary();
-  }, [fetchSummary]);
+    let cancelled = false;
+
+    const checkBackendHealth = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/api/health`, { cache: "no-store" });
+        if (!res.ok) {
+          if (!cancelled) {
+            setTimeout(checkBackendHealth, 2500);
+          }
+          return;
+        }
+
+        const data = await res.json();
+        const isHealthy = data?.status === "healthy" || data?.status === "healthy Manjiri";
+
+        if (isHealthy) {
+          if (!cancelled) {
+            setBackendReady(true);
+          }
+          return;
+        }
+
+        if (!cancelled) {
+          setTimeout(checkBackendHealth, 2500);
+        }
+      } catch {
+        if (!cancelled) {
+          setTimeout(checkBackendHealth, 2500);
+        }
+      }
+    };
+
+    checkBackendHealth();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (backendReady) {
+      fetchSummary();
+    }
+  }, [backendReady, fetchSummary]);
 
   if (!user) return null;
 
@@ -113,8 +156,21 @@ export default function Dashboard() {
   const ScoreIcon = sc?.icon ?? Activity;
 
   return (
-    <main className="flex-1 overflow-y-auto bg-[#f9faf7]">
-      <div className="p-6 md:p-8 lg:p-10 max-w-5xl mx-auto space-y-7">
+    <>
+      {!backendReady && (
+        <div className="fixed right-4 top-4 z-50 max-w-sm rounded-2xl border border-[#d6ede4] bg-white/95 px-4 py-3 shadow-lg backdrop-blur-sm">
+          <div className="flex items-center gap-3">
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#0a4e3e] border-t-transparent" />
+            <div>
+              <p className="text-sm font-extrabold text-slate-800">Backend is getting ready</p>
+              <p className="text-[11px] font-medium text-slate-500">Checking connection to the API...</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <main className="flex-1 overflow-y-auto bg-[#f9faf7]">
+        <div className="p-6 md:p-8 lg:p-10 max-w-5xl mx-auto space-y-7">
 
         {/* ── Header ── */}
         <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -519,7 +575,8 @@ export default function Dashboard() {
           </div>
 
         </div>
-      </div>
-    </main>
+        </div>
+      </main>
+    </>
   );
 }

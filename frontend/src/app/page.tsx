@@ -85,12 +85,12 @@ export default function Page() {
             >
               Get Started
             </Link>
-            <button 
+            {/* <button 
               className="w-full sm:w-auto px-6 py-3.5 bg-white border border-[#e2edea] hover:bg-slate-50 text-slate-700 font-bold rounded-full shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <Play className="w-4 h-4 fill-[#0f5b47] text-[#0f5b47]" />
               Watch Demo
-            </button>
+            </button> */}
           </div>
         </div>
 
