@@ -169,11 +169,11 @@ export default function Dashboard() {
         </div>
       )}
 
-      <main className="flex-1 overflow-y-auto bg-[#f9faf7]">
+      <main className="flex-1 bg-[#f9faf7] relative">
         <div className="p-6 md:p-8 lg:p-10 max-w-5xl mx-auto space-y-7">
 
         {/* ── Header ── */}
-        <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sticky top-0 z-40 bg-[#f9faf7]/90 backdrop-blur-md py-4 -mx-6 px-6 md:-mx-8 md:px-8 lg:-mx-10 lg:px-10 border-b border-[#ecebe6] shadow-sm mb-7 -mt-6 md:-mt-8 lg:-mt-10">
           <div>
             <h1 className="text-2xl md:text-3xl font-extrabold text-slate-800 flex items-center gap-2">
               {greet()}, {firstName}

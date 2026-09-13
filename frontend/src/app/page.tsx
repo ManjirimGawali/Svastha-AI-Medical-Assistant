@@ -19,13 +19,14 @@ import {
 
 export default function Page() {
   return (
-    <div className="min-h-screen bg-[#fafdfb] relative overflow-hidden flex flex-col">
+    <div className="min-h-screen bg-[#fafdfb] relative overflow-x-hidden flex flex-col">
       {/* Background soft light shapes */}
       <div className="absolute top-[-10%] left-[-5%] w-[45%] h-[45%] bg-[#d9f2ec] rounded-full blur-[130px] opacity-40 pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-5%] w-[45%] h-[45%] bg-[#dff5f0] rounded-full blur-[130px] opacity-40 pointer-events-none" />
 
       {/* Navigation Header */}
-      <header className="w-full max-w-7xl mx-auto px-6 py-6 flex items-center justify-between z-10">
+      <div className="sticky top-0 z-50 w-full bg-[#fafdfb]/80 backdrop-blur-md border-b border-[#ecebe6]/50">
+        <header className="w-full max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <img src="/logo.png" alt="Svastha Logo" className="w-10 h-10 object-contain" />
           <span className="text-2xl font-extrabold tracking-tight text-[#0f5b47] flex items-center gap-1.5">
@@ -57,7 +58,8 @@ export default function Page() {
             Get Started
           </Link>
         </div>
-      </header>
+        </header>
+      </div>
 
       {/* Hero Container */}
       <section className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center py-12 md:py-16 z-10 flex-1 w-full">
