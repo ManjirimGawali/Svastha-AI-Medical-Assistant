@@ -65,14 +65,7 @@ export default function DashboardLayout({
       {/* Mobile Top Bar */}
       <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-[#ecebe6] shrink-0 z-30 relative">
         <div className="flex items-center gap-2 cursor-pointer" onClick={() => router.push("/dashboard")}>
-          <div className="text-[#0a4e3e]">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2C12 2 15 7 15 10C15 11.6569 13.6569 13 12 13C10.3431 13 9 11.6569 9 10C9 7 12 2 12 2Z" fill="currentColor" opacity="0.9" />
-              <path d="M12 13C12 13 17.5 13.5 19 16C20.5 18.5 19.5 21 17 21C14.5 21 12 17.5 12 17.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              <path d="M12 13C12 13 6.5 13.5 5 16C3.5 18.5 4.5 21 7 21C9.5 21 12 17.5 12 17.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              <path d="M12 13V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-          </div>
+          <img src="/logo.png" alt="Svastha Logo" className="w-7 h-7 object-contain" />
           <span className="text-xl font-extrabold tracking-tight text-[#0a4e3e] font-sans">
             Svastha
           </span>
@@ -99,14 +92,7 @@ export default function DashboardLayout({
           {/* Logo with Svastha leaf styling */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push("/dashboard")}>
-              <div className="text-[#0a4e3e]">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="transform scale-110">
-                  <path d="M12 2C12 2 15 7 15 10C15 11.6569 13.6569 13 12 13C10.3431 13 9 11.6569 9 10C9 7 12 2 12 2Z" fill="currentColor" opacity="0.9" />
-                  <path d="M12 13C12 13 17.5 13.5 19 16C20.5 18.5 19.5 21 17 21C14.5 21 12 17.5 12 17.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                  <path d="M12 13C12 13 6.5 13.5 5 16C3.5 18.5 4.5 21 7 21C9.5 21 12 17.5 12 17.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                  <path d="M12 13V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                </svg>
-              </div>
+              <img src="/logo.png" alt="Svastha Logo" className="w-8 h-8 object-contain" />
               <span className="text-2xl font-extrabold tracking-tight text-[#0a4e3e] font-sans">
                 Svastha
               </span>

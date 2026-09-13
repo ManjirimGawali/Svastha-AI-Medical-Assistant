@@ -27,9 +27,7 @@ export default function Page() {
       {/* Navigation Header */}
       <header className="w-full max-w-7xl mx-auto px-6 py-6 flex items-center justify-between z-10">
         <div className="flex items-center gap-3">
-          <div className="bg-[#0f5b47] p-2 rounded-xl text-white">
-            <HeartPulse className="w-6 h-6" />
-          </div>
+          <img src="/logo.png" alt="Svastha Logo" className="w-10 h-10 object-contain" />
           <span className="text-2xl font-extrabold tracking-tight text-[#0f5b47] flex items-center gap-1.5">
             Svastha
           </span>

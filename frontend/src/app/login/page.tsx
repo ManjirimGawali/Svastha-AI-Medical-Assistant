@@ -29,7 +29,6 @@ type AuthMode = "login" | "register" | "forgot";
 export default function AuthPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
-  
   const [mode, setMode] = useState<AuthMode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -124,8 +123,8 @@ export default function AuthPage() {
           
           {/* Header & Logo */}
           <div className="flex items-center gap-2.5 z-10">
-            <div className="bg-white/10 p-2 rounded-xl backdrop-blur-md border border-white/20">
-              <HeartPulse className="w-6 h-6 text-emerald-300" />
+            <div className="p-1 rounded-xl backdrop-blur-md border border-white/20 bg-white/20">
+              <img src="/logo.png" alt="Svastha Logo" className="w-8 h-8 object-contain" />
             </div>
             <span className="text-2xl font-bold tracking-tight text-white flex items-center gap-1.5">
               Svastha <span className="text-xs bg-emerald-500/30 text-emerald-300 px-2 py-0.5 rounded-full font-normal">AI Assistant</span>

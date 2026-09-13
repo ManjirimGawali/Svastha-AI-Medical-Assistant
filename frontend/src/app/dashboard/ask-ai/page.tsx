@@ -122,7 +122,9 @@ export default function AskAIPage() {
       <header className="flex items-center justify-between px-8 py-5 bg-white border-b border-[#ecebe6] shrink-0">
         <div>
           <h1 className="text-xl font-extrabold text-slate-800 flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-[#0a4e3e]" />
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-[#0a4e3e] via-[#1c7f69] to-[#8bd0b3] text-xs font-black text-white shadow-sm">
+              S
+            </div>
             Ask AI
           </h1>
           <p className="text-xs font-semibold text-slate-400 mt-0.5">
@@ -147,19 +149,11 @@ export default function AskAIPage() {
         {/* Empty state */}
         {messages.length === 0 && !loading && (
           <div className="flex flex-col items-center justify-center h-full gap-8 text-center">
-            {/* Svastha orb */}
+            {/* Svastha brand logo */}
             <div className="relative">
-              <div className="w-20 h-20 rounded-full bg-[#eef8f5] border-2 border-[#d6ede4] flex items-center justify-center shadow-inner">
-                <div className="text-[#0a4e3e]">
-                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2C12 2 15 7 15 10C15 11.6569 13.6569 13 12 13C10.3431 13 9 11.6569 9 10C9 7 12 2 12 2Z" fill="currentColor" opacity="0.9" />
-                    <path d="M12 13C12 13 17.5 13.5 19 16C20.5 18.5 19.5 21 17 21C14.5 21 12 17.5 12 17.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                    <path d="M12 13C12 13 6.5 13.5 5 16C3.5 18.5 4.5 21 7 21C9.5 21 12 17.5 12 17.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                    <path d="M12 13V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                  </svg>
-                </div>
+              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-[#0a4e3e] via-[#1d8f72] to-[#9be1c7] text-4xl font-black text-white shadow-[0_18px_45px_rgba(10,78,62,0.22)] ring-4 ring-white">
+                S
               </div>
-              {/* Pulse ring */}
               <div className="absolute inset-0 rounded-full border-2 border-[#0a4e3e] opacity-20 animate-ping" />
             </div>
 
