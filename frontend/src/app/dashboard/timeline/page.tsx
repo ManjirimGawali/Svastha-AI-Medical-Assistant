@@ -530,7 +530,7 @@ function EmptyState({
   description: string;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center py-20 gap-4 text-center">
+    <div className="flex flex-col items-center justify-center py-10 md:py-20 gap-4 text-center px-4">
       <div className="w-16 h-16 rounded-2xl bg-[#eef8f5] border border-[#d6ede4] flex items-center justify-center">
         <Icon className="w-7 h-7 text-[#0a4e3e]" />
       </div>
@@ -643,7 +643,7 @@ export default function TimelinePage() {
   return (
     <main className="flex-1 flex flex-col h-screen overflow-hidden bg-[#f9faf7]">
       {/* Header */}
-      <header className="flex items-center justify-between px-8 py-5 bg-white border-b border-[#ecebe6] shrink-0">
+      <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-4 md:px-8 py-5 bg-white border-b border-[#ecebe6] shrink-0">
         <div>
           <h1 className="text-xl font-extrabold text-slate-800 flex items-center gap-2">
             <Activity className="w-5 h-5 text-[#0a4e3e]" />
@@ -664,8 +664,8 @@ export default function TimelinePage() {
       </header>
 
       {/* Tabs */}
-      <div className="bg-white border-b border-[#ecebe6] px-8 shrink-0">
-        <div className="flex gap-1">
+      <div className="bg-white border-b border-[#ecebe6] px-4 md:px-8 shrink-0 overflow-x-auto hide-scrollbar">
+        <div className="flex gap-1 min-w-max">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -684,7 +684,7 @@ export default function TimelinePage() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto px-8 py-6">
+      <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6">
         {error && (
           <div className="mb-5 flex items-center gap-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-2xl px-4 py-3 text-sm font-semibold">
             <AlertTriangle className="w-4 h-4 shrink-0" />
@@ -732,8 +732,8 @@ export default function TimelinePage() {
                 description="Once you have at least one completed report with numeric biomarkers, trends will appear here."
               />
             ) : (
-              <div className={selectedTrendData ? "flex gap-6" : ""}>
-                <div className={selectedTrendData ? "w-80 shrink-0" : "w-full"}>
+              <div className={selectedTrendData ? "flex flex-col lg:flex-row gap-6" : ""}>
+                <div className={selectedTrendData ? "w-full lg:w-80 shrink-0" : "w-full"}>
                   <div className="mb-4">
                     <input
                       type="text"
