@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { API_BASE } from "@/lib/api";
@@ -22,6 +22,40 @@ export default function UploadReportsPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<"idle" | "uploading" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [recentReports, setRecentReports] = useState<any[]>([]);
+  const [recentReportsLoading, setRecentReportsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchRecentReports = async () => {
+      if (!user) return;
+
+      try {
+        setRecentReportsLoading(true);
+        const token = await user.getIdToken();
+        const response = await fetch(`${API_BASE}/api/reports`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch reports");
+        }
+
+        const data = await response.json();
+        const firstThree = Array.isArray(data.reports) ? data.reports.slice(0, 3) : [];
+        setRecentReports(firstThree);
+      } catch (error) {
+        console.error("Error fetching recent reports:", error);
+        setRecentReports([]);
+      } finally {
+        setRecentReportsLoading(false);
+      }
+    };
+
+    fetchRecentReports();
+  }, [user]);
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -235,28 +269,39 @@ export default function UploadReportsPage() {
             <h3 className="text-lg font-extrabold text-slate-800 pb-3 border-b border-[#faf9f5]">Recent Uploads</h3>
             
             <div className="mt-4 space-y-4">
-              {[
-                { title: "Blood Report", date: "12 Jun, 2024", size: "2.4 MB", color: "bg-[#fee2e2] text-red-600 border-red-100", type: "CBC" },
-                { title: "X-Ray Chest", date: "08 May, 2024", size: "1.6 MB", color: "bg-[#dbeafe] text-blue-600 border-blue-100", type: "XR" },
-                { title: "Prescription", date: "02 May, 2024", size: "1.2 MB", color: "bg-[#ffedd5] text-amber-600 border-amber-100", type: "Rx" }
-              ].map((item, idx) => (
-                <div key={idx} className="flex items-center justify-between p-3 border border-[#f0efea] rounded-2xl hover:bg-[#fafbf9] transition-all group">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs border ${item.color}`}>
-                      {item.type}
+              {recentReportsLoading ? (
+                <div className="text-xs font-semibold text-slate-400 py-4">Loading recent reports...</div>
+              ) : recentReports.length === 0 ? (
+                <div className="text-xs font-semibold text-slate-400 py-4">No recent reports yet.</div>
+              ) : (
+                recentReports.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => router.push(`/dashboard/reports/analysis?id=${item.id}`)}
+                    className="w-full text-left flex items-center justify-between p-3 border border-[#f0efea] rounded-2xl hover:bg-[#fafbf9] transition-all group"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs border ${item.color || "bg-[#eef8f5] text-[#0a4e3e] border-[#d6ede4]"}`}>
+                        {item.initial || "FILE"}
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="text-xs font-bold text-slate-800 group-hover:text-[#0a4e3e] transition-colors truncate">{item.title}</h4>
+                        <p className="text-[10px] font-semibold text-slate-400 mt-0.5">{item.date}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="text-xs font-bold text-slate-800 group-hover:text-[#0a4e3e] transition-colors">{item.title}</h4>
-                      <p className="text-[10px] font-semibold text-slate-400 mt-0.5">{item.date} • {item.size}</p>
-                    </div>
-                  </div>
-                  <CheckCircle className="w-4 h-4 text-emerald-600 fill-emerald-50 shrink-0" />
-                </div>
-              ))}
+                    <CheckCircle className="w-4 h-4 text-emerald-600 fill-emerald-50 shrink-0" />
+                  </button>
+                ))
+              )}
             </div>
           </div>
 
-          <button className="w-full bg-[#faf9f5] hover:bg-[#f3f2eb] border border-[#ecebe6] text-slate-700 text-xs font-bold py-3.5 rounded-full transition-all text-center mt-6 cursor-pointer">
+          <button
+            type="button"
+            onClick={() => router.push("/dashboard/reports")}
+            className="w-full bg-[#faf9f5] hover:bg-[#f3f2eb] border border-[#ecebe6] text-slate-700 text-xs font-bold py-3.5 rounded-full transition-all text-center mt-6 cursor-pointer"
+          >
             View All
           </button>
         </div>
