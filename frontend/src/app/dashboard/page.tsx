@@ -136,12 +136,12 @@ export default function Dashboard() {
             >
               <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
             </button>
-            <button className="bg-white border border-[#ecebe6] p-2.5 rounded-xl hover:bg-slate-50 text-slate-600 transition-all shadow-sm relative">
+            {/* <button className="bg-white border border-[#ecebe6] p-2.5 rounded-xl hover:bg-slate-50 text-slate-600 transition-all shadow-sm relative">
               <Bell className="w-4 h-4" />
               {(summary?.currentFlags?.length ?? 0) > 0 && (
                 <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-rose-500 rounded-full" />
               )}
-            </button>
+            </button> */}
             <button
               onClick={() => router.push("/dashboard/reports")}
               className="bg-[#0a4e3e] hover:bg-[#083d31] text-white text-xs font-bold px-5 py-3 rounded-full transition-all shadow-sm flex items-center gap-1.5"
