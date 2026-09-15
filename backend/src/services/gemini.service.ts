@@ -8,9 +8,11 @@ if (!apiKey) {
   throw new Error("API key should be set when using the Gemini API.");
 }
 const ai = new GoogleGenAI({ apiKey });
-
-const GEMINI_MODELS = ["gemini-flash-latest"];
-
+const GEMINI_MODELS = [
+  "gemini-1.5-flash-8b",
+  "gemini-1.5-flash",
+  "gemini-flash-latest",
+];
 export interface ExtractedBiomarker {
   name: string;
   value: string;

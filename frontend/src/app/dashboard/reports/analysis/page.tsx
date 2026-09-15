@@ -223,7 +223,7 @@ export default function ReportAnalysisPage() {
           <p className="text-xs sm:text-sm font-semibold text-slate-400">{formattedDate} • Patient Report</p>
         </div>
 
-        <a 
+        {/* <a 
           href={`${API_BASE}/api/reports/${report.id}/download`} 
           target="_blank" 
           rel="noreferrer"
@@ -231,7 +231,7 @@ export default function ReportAnalysisPage() {
         >
           <Download className="w-3.5 h-3.5" />
           <span>View Original File</span>
-        </a>
+        </a> */}
       </div>
 
       {/* Main Column Split */}
