@@ -28,9 +28,9 @@ export default function Page() {
       <div className="sticky top-0 z-50 w-full bg-[#fafdfb]/80 backdrop-blur-md border-b border-[#ecebe6]/50">
         <header className="w-full max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <img src="/logo.png" alt="Svastha Logo" className="w-10 h-10 object-contain" />
+          <img src="/logo.png" alt="Swasthya Logo" className="w-10 h-10 object-contain" />
           <span className="text-2xl font-extrabold tracking-tight text-[#0f5b47] flex items-center gap-1.5">
-            Svastha
+            Swasthya
           </span>
         </div>
 
@@ -103,7 +103,7 @@ export default function Page() {
             
             <Image 
               src="/hero-illustration.png" 
-              alt="Svastha Medical Assistant Hero" 
+              alt="Swasthya Medical Assistant Hero" 
               width={580} 
               height={435}
               priority
@@ -190,7 +190,7 @@ export default function Page() {
       {/* Simple Footer */}
       <footer className="py-6 border-t border-[#e2edea] mt-auto bg-white/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
-          <p>© 2026 Svastha Health Assistant. All rights reserved.</p>
+          <p>© 2026 Swasthya Health Assistant. All rights reserved.</p>
           <div className="flex gap-6">
             <Link href="#" className="hover:underline">Privacy Policy</Link>
             <Link href="#" className="hover:underline">Terms of Service</Link>

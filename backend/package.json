@@ -1,7 +1,7 @@
 {
-  "name": "svastha-backend",
+  "name": "swasthya-backend",
   "version": "1.0.0",
-  "description": "Backend API for Svastha AI Medical Assistant",
+  "description": "Backend API for Swasthya AI Medical Assistant",
   "main": "dist/server.js",
   "scripts": {
     "postinstall": "prisma generate",

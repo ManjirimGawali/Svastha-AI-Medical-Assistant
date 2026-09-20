@@ -65,9 +65,9 @@ export default function DashboardLayout({
       {/* Mobile Top Bar */}
       <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-[#ecebe6] shrink-0 z-30 relative">
         <div className="flex items-center gap-2 cursor-pointer" onClick={() => router.push("/dashboard")}>
-          <img src="/logo.png" alt="Svastha Logo" className="w-7 h-7 object-contain" />
+          <img src="/logo.png" alt="Swasthya Logo" className="w-7 h-7 object-contain" />
           <span className="text-xl font-extrabold tracking-tight text-[#0a4e3e] font-sans">
-            Svastha
+            Swasthya
           </span>
         </div>
         <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 text-slate-500 hover:text-[#0a4e3e] hover:bg-[#eaf4f0] rounded-lg transition-colors">
@@ -89,12 +89,12 @@ export default function DashboardLayout({
       }`}>
         
         <div className="space-y-8">
-          {/* Logo with Svastha leaf styling */}
+          {/* Logo with Swasthya leaf styling */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push("/dashboard")}>
-              <img src="/logo.png" alt="Svastha Logo" className="w-8 h-8 object-contain" />
+              <img src="/logo.png" alt="Swasthya Logo" className="w-8 h-8 object-contain" />
               <span className="text-2xl font-extrabold tracking-tight text-[#0a4e3e] font-sans">
-                Svastha
+                Swasthya
               </span>
             </div>
             

@@ -128,7 +128,7 @@ export default function AskAIPage() {
             Ask AI
           </h1>
           <p className="text-xs font-semibold text-slate-400 mt-0.5">
-            Ask anything about your health records — Svastha has full context.
+            Ask anything about your health records — Swasthya has full context.
           </p>
         </div>
 
@@ -149,7 +149,7 @@ export default function AskAIPage() {
         {/* Empty state */}
         {messages.length === 0 && !loading && (
           <div className="flex flex-col items-center justify-center h-full gap-8 text-center">
-            {/* Svastha brand logo */}
+            {/* Swasthya brand logo */}
             <div className="relative">
               <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-[#0a4e3e] via-[#1d8f72] to-[#9be1c7] text-4xl font-black text-white shadow-[0_18px_45px_rgba(10,78,62,0.22)] ring-4 ring-white">
                 S
@@ -160,7 +160,7 @@ export default function AskAIPage() {
             <div>
               <h2 className="text-lg font-extrabold text-slate-800">Hello, {user?.displayName?.split(" ")[0] || "there"}!</h2>
               <p className="text-sm text-slate-400 font-medium mt-1 max-w-xs">
-                I'm Svastha, your AI health assistant. I have access to all your uploaded medical reports. Ask me anything!
+                I'm Swasthya, your AI health assistant. I have access to all your uploaded medical reports. Ask me anything!
               </p>
             </div>
 
@@ -283,7 +283,7 @@ export default function AskAIPage() {
         </div>
 
         <p className="text-[10px] text-slate-400 font-medium text-center mt-2">
-          Svastha AI may make mistakes. Always consult a healthcare professional.
+          Swasthya AI may make mistakes. Always consult a healthcare professional.
         </p>
       </div>
     </main>

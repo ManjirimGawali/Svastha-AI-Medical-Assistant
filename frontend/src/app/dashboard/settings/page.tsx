@@ -379,7 +379,7 @@ export default function SettingsPage() {
           <SectionCard
             icon={User}
             title="Your Profile"
-            description="Account information linked to your Svastha session"
+            description="Account information linked to your Swasthya session"
           >
             {loadingProfile ? (
               <div className="animate-pulse space-y-3">
@@ -543,7 +543,7 @@ export default function SettingsPage() {
               <div>
                 <p className="text-sm font-semibold text-rose-700">Delete all my data</p>
                 <p className="text-xs text-slate-500 font-medium mt-0.5">
-                  Permanently removes all your reports and biomarker data from Svastha. This cannot be undone.
+                  Permanently removes all your reports and biomarker data from Swasthya. This cannot be undone.
                 </p>
               </div>
               <button
@@ -564,7 +564,7 @@ export default function SettingsPage() {
       {confirmDelete && confirmDelete !== "all" && (
         <ConfirmModal
           title="Delete this report?"
-          description="This will permanently delete the report and all its biomarker data from Svastha. The original file will also be removed from storage."
+          description="This will permanently delete the report and all its biomarker data from Swasthya. The original file will also be removed from storage."
           confirmLabel="Yes, delete"
           loading={deletingId === confirmDelete}
           onConfirm={() => handleDeleteReport(confirmDelete)}

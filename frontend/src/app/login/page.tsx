@@ -102,7 +102,7 @@ export default function AuthPage() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-muted text-sm font-medium animate-pulse">Loading Svastha...</p>
+          <p className="text-muted text-sm font-medium animate-pulse">Loading Swasthya...</p>
         </div>
       </div>
     );
@@ -124,10 +124,10 @@ export default function AuthPage() {
           {/* Header & Logo */}
           <div className="flex items-center gap-2.5 z-10">
             <div className="p-1 rounded-xl backdrop-blur-md border border-white/20 bg-white/20">
-              <img src="/logo.png" alt="Svastha Logo" className="w-8 h-8 object-contain" />
+              <img src="/logo.png" alt="Swasthya Logo" className="w-8 h-8 object-contain" />
             </div>
             <span className="text-2xl font-bold tracking-tight text-white flex items-center gap-1.5">
-              Svastha <span className="text-xs bg-emerald-500/30 text-emerald-300 px-2 py-0.5 rounded-full font-normal">AI Assistant</span>
+              Swasthya <span className="text-xs bg-emerald-500/30 text-emerald-300 px-2 py-0.5 rounded-full font-normal">AI Assistant</span>
             </span>
           </div>
 
@@ -181,7 +181,7 @@ export default function AuthPage() {
             </h3>
             <p className="text-muted text-sm mt-1.5">
               {mode === "login" && "Please enter your details to sign in to your dashboard"}
-              {mode === "register" && "Get started by creating your secure Svastha account"}
+              {mode === "register" && "Get started by creating your secure Swasthya account"}
               {mode === "forgot" && "Enter your email to receive recovery instructions"}
             </p>
           </div>

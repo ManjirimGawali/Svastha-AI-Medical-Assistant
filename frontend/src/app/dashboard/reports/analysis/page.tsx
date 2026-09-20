@@ -253,7 +253,7 @@ export default function ReportAnalysisPage() {
               {/* Document Header Logo */}
               <div className="flex justify-between items-start pb-4 border-b border-[#f0efea] text-slate-700">
                 <div>
-                  <h4 className="text-[10px] font-black tracking-wider text-slate-800 uppercase">Svastha Diagnostic Labs</h4>
+                  <h4 className="text-[10px] font-black tracking-wider text-slate-800 uppercase">Swasthya Diagnostic Labs</h4>
                   <p className="text-[8px] font-bold text-slate-400 mt-0.5">Automated OCR Extraction</p>
                 </div>
                 <div className="text-[8px] font-bold text-right text-slate-400">

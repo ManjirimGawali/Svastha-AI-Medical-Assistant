@@ -89,7 +89,7 @@ function extractText(response: any): string {
 export async function askAI(userId: string, question: string): Promise<AskAIResponse> {
   const dbContext = await buildUserContext(userId);
 
-  const systemInstruction = `You are Svastha, a friendly and knowledgeable AI medical assistant.
+  const systemInstruction = `You are Swasthya, a friendly and knowledgeable AI medical assistant.
 You have access to the patient's medical records provided below.
 Use this data to give accurate, personalised answers.
 Always be empathetic, clear, and concise.

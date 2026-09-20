@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Svastha - AI-Powered Medical Assistant",
-  description: "Understand, organize, and interact with your medical records in plain language with Svastha.",
+  title: "Swasthya - AI-Powered Medical Assistant",
+  description: "Understand, organize, and interact with your medical records in plain language with Swasthya.",
 };
 
 export default function RootLayout({
