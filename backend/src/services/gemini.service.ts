@@ -9,8 +9,9 @@ if (!apiKey) {
 }
 const ai = new GoogleGenAI({ apiKey });
 const GEMINI_MODELS = [
-  "gemini-1.5-flash-8b",
+  "gemini-1.5-pro",
   "gemini-1.5-flash",
+  "gemini-1.5-flash-8b",
   "gemini-flash-latest",
 ];
 export interface ExtractedBiomarker {
@@ -47,7 +48,7 @@ function extractJsonText(response: any): string {
   return text;
 }
 
-export async function parseBiomarkers(ocrText: string): Promise<ParsedReportResult> {
+export async function parseBiomarkers(ocrText: string, modelToUse = "gemini-flash-latest"): Promise<ParsedReportResult> {
   const prompt = `
 You are an expert AI medical reports parser. Analyze the following OCR extracted raw text from a patient's medical laboratory report.
 Extract the:
@@ -67,56 +68,43 @@ ${ocrText}
 """
 `;
 
-  let lastError: unknown;
-
-  for (const model of GEMINI_MODELS) {
-    try {
-      const response = await ai.models.generateContent({
-        model,
-        contents: prompt,
-        config: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: "OBJECT",
-            properties: {
-              reportName: { type: "STRING" },
-              reportDate: { type: "STRING", nullable: true },
-              aiSummary: { type: "STRING" },
-              biomarkers: {
-                type: "ARRAY",
-                items: {
-                  type: "OBJECT",
-                  properties: {
-                    name: { type: "STRING" },
-                    value: { type: "STRING" },
-                    unit: { type: "STRING" },
-                    referenceRange: { type: "STRING" },
-                    interpretation: { type: "STRING" }
-                  },
-                  required: ["name", "value", "unit", "referenceRange", "interpretation"]
-                }
-              }
-            },
-            required: ["reportName", "reportDate", "aiSummary", "biomarkers"]
+  const response = await ai.models.generateContent({
+    model: modelToUse,
+    contents: prompt,
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: "OBJECT",
+        properties: {
+          reportName: { type: "STRING" },
+          reportDate: { type: "STRING", nullable: true },
+          aiSummary: { type: "STRING" },
+          biomarkers: {
+            type: "ARRAY",
+            items: {
+              type: "OBJECT",
+              properties: {
+                name: { type: "STRING" },
+                value: { type: "STRING" },
+                unit: { type: "STRING" },
+                referenceRange: { type: "STRING" },
+                interpretation: { type: "STRING" }
+              },
+              required: ["name", "value", "unit", "referenceRange", "interpretation"]
+            }
           }
-        }
-      });
-
-      const textResponse = extractJsonText(response);
-      if (!textResponse) {
-        throw new Error("Gemini returned an empty response body.");
+        },
+        required: ["reportName", "reportDate", "aiSummary", "biomarkers"]
       }
-
-      const parsedData: ParsedReportResult = JSON.parse(textResponse);
-      console.log("Gemini response parsed successfully for model:", model, parsedData);
-      return parsedData;
-    } catch (error) {
-      lastError = error;
-      console.warn(`Gemini model ${model} failed, trying the next available model.`, error);
     }
+  });
+
+  const textResponse = extractJsonText(response);
+  if (!textResponse) {
+    throw new Error("Gemini returned an empty response body.");
   }
 
-  const message = lastError instanceof Error ? lastError.message : "Unknown Gemini error";
-  console.error("Gemini biomarker parsing failed:", lastError);
-  throw new Error(`Gemini biomarker parsing failed: ${message}`);
+  const parsedData: ParsedReportResult = JSON.parse(textResponse);
+  return parsedData;
 }
+

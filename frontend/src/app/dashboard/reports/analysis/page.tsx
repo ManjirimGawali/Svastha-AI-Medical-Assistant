@@ -164,8 +164,14 @@ export default function ReportAnalysisPage() {
         <AlertTriangle className="w-10 h-10 text-red-500" />
         <div className="text-center max-w-md">
           <h2 className="text-base font-bold text-slate-800">Analysis Failed</h2>
-          <p className="text-xs font-semibold text-red-600 mt-1">
-            {report.aiSummary || "The system could not extract text or parse biomarkers from this file format."}
+          <p className="text-xs font-semibold text-red-600 mt-2 leading-relaxed">
+            {(() => {
+              const errorText = report.aiSummary || "";
+              if (errorText.includes("503") || errorText.includes("high demand") || errorText.includes("UNAVAILABLE") || errorText.includes("429")) {
+                return "Our AI servers are currently experiencing a surge in traffic. Don't worry, your document is saved! Please wait a moment and click Retry below.";
+              }
+              return errorText || "The system could not extract text or parse biomarkers from this file format.";
+            })()}
           </p>
           <div className="flex justify-center gap-3 mt-6">
             <button 

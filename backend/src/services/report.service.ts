@@ -1,6 +1,8 @@
 import { prisma } from "../lib/prisma";
 import { extractText } from "./ocr.service";
 import { parseBiomarkers } from "./gemini.service";
+import { parseBiomarkersCloudflare } from "./cloudflare.service";
+import { parseBiomarkersGrok } from "./grok.service";
 
 export class ReportService {
   /**
@@ -18,7 +20,7 @@ export class ReportService {
   }
 
   /**
-   * Orchestrates the OCR, Gemini parsing, and database storage in a robust transaction.
+   * Orchestrates the OCR, Parsing, and database storage in a robust transaction.
    */
   static async processReportPipeline(reportId: string, fileBuffer: Buffer, mimeType: string) {
     let ocrText = "";
@@ -26,14 +28,51 @@ export class ReportService {
       // 1. Run OCR
       ocrText = await extractText(fileBuffer, mimeType);
 
-      // 2. Run Gemini Parsing
-      const parsedResult = await parseBiomarkers(ocrText);
+      // 2. Run Parsing (Cloudflare 2x -> Gemini 2x)
+      let parsedResult;
+      let success = false;
+      let lastError: any;
+
+      // Try Cloudflare 2 times
+      for (let i = 0; i < 2; i++) {
+        try {
+          console.log(`[ReportService] Attempting Cloudflare parsing (Attempt ${i + 1}/2)...`);
+          parsedResult = await parseBiomarkersCloudflare(ocrText);
+          success = true;
+          console.log(`[ReportService] Cloudflare parsing succeeded on attempt ${i + 1}`);
+          break;
+        } catch (error) {
+          lastError = error;
+          console.warn(`[ReportService] Cloudflare attempt ${i + 1} failed. Full error:`, error);
+        }
+      }
+
+      // Try Gemini 2 times if Cloudflare failed
+      if (!success) {
+        console.log(`[ReportService] Cloudflare failed twice. Falling back to Gemini...`);
+        for (let i = 0; i < 2; i++) {
+          try {
+            console.log(`[ReportService] Attempting Gemini parsing (Attempt ${i + 1}/2)...`);
+            parsedResult = await parseBiomarkers(ocrText);
+            success = true;
+            console.log(`[ReportService] Gemini parsing succeeded on attempt ${i + 1}`);
+            break;
+          } catch (error) {
+            lastError = error;
+            console.warn(`[ReportService] Gemini attempt ${i + 1} failed. Full error:`, error);
+          }
+        }
+      }
+
+      if (!success || !parsedResult) {
+        throw new Error(`All parsing attempts failed (Cloudflare and Gemini). Last error: ${JSON.stringify(lastError)}`);
+      }
 
       // 3. Save parsed details and set to completed
       await prisma.report.update({
         where: { id: reportId },
         data: {
-          reportName: parsedResult.reportName,
+          reportName: parsedResult.reportName || "Medical Report",
           reportDate: parsedResult.reportDate ? new Date(parsedResult.reportDate) : null,
           ocrText,
           aiSummary: parsedResult.aiSummary,
